@@ -4,13 +4,13 @@
 
 ## 狀態
 
-網站及私人 Google Sheets 後台已建立，Apps Script 已部署。實際提交、同一回覆更新及人數統計測試已通過；測試資料已清除。GitHub Pages 公開發佈尚待完成。
+網站及私人 Google Sheets 後台已建立，Apps Script 已部署。實際提交、同一回覆更新及人數統計測試已通過；測試資料已清除。GitHub Pages 已啟用，網站：https://yeungkaiho.github.io/weddinginvitation_chatgpt/ 。
 
 ## 本地預覽與 GitHub Pages
 
 使用 Node 22.13 或更新版本及 pnpm。執行 `pnpm install`，再執行 `pnpm exec vite --config vite.github.config.ts`。
 
-以 `pnpm exec vite build --config vite.github.config.ts` 產生 `dist-github`，該資料夾為 GitHub Pages 的完整靜態網站。所有圖片路徑均為相對路徑。
+以 `pnpm exec vite build --config vite.github.config.ts` 產生 `dist-github`，將該資料夾內容同步至 `docs/`（保留 `.nojekyll`），提交至 main 後 GitHub Pages 會自動發佈 `docs/`。所有圖片路徑均為相對路徑。
 
 ## 私人 Google Sheets 後台
 
