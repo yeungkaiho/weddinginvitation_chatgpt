@@ -11,12 +11,13 @@ function validate_(p) {
   if(!p || p.website || p.consent!==true || !/^[0-9a-f-]{36}$/i.test(p.id||'')) throw new Error('Invalid request');
   if(!['出席','未能出席'].includes(p.attend)) throw new Error('Invalid attendance');
   const attending=p.attend==='出席';
-  if(attending && !['證婚及午宴','只出席證婚','只出席午宴'].includes(p.events)) throw new Error('Invalid event');
+  if(p.side!==undefined && !['Kaiho（男家）','Sophia（女家）'].includes(p.side)) throw new Error('Invalid side');
+  if(attending && !['證婚及午宴','只出席證婚','只出席午宴','稍後決定'].includes(p.events)) throw new Error('Invalid event');
   if(attending && !['自行前往','希望乘坐接駁車','自行駕車','尚未決定'].includes(p.transport)) throw new Error('Invalid transport');
   const adults=attending?integer_(p.adults,30):0, children=attending?integer_(p.children,30):0, total=adults+children;
   if(attending && total<1) throw new Error('No guests');
   if(typeof p.phone!=='string' || !/^\+?[\d ()-]{8,24}$/.test(p.phone) || p.phone.replace(/\D/g,'').length<8) throw new Error('Invalid phone');
-  return [p.id,new Date(),text_(p.name,80,true),text_(p.phone,24,true),p.attend,adults,children,attending&&p.events!=='只出席午宴'?total:0,attending&&p.events!=='只出席證婚'?total:0,attending?integer_(p.pets,10):0,attending?p.transport:'不適用',attending?text_(p.diet||'',1000,false):'',text_(p.note||'',1500,false),'已同意'];
+  return [p.id,new Date(),text_(p.name,80,true),text_(p.phone,24,true),p.attend,adults,children,attending&&['證婚及午宴','只出席證婚'].includes(p.events)?total:0,attending&&['證婚及午宴','只出席午宴'].includes(p.events)?total:0,attending?integer_(p.pets,10):0,attending?p.transport:'不適用',attending?text_(p.diet||'',1000,false):'',text_(p.note||'',1500,false),'已同意',p.side||'未填寫',attending?p.events:'不適用'];
 }
 function doPost(e) {
   let lock;
@@ -33,7 +34,7 @@ function doPost(e) {
     const target=found?found.getRow():Math.max(2,last+1);
     if(target>10000) throw new Error('Response limit');
     if(target>sheet.getMaxRows()) sheet.insertRowsAfter(sheet.getMaxRows(),100);
-    sheet.getRange(target,1,1,14).setValues([row]);
+    sheet.getRange(target,1,1,16).setValues([row]);
     sheet.getRange(target,2).setNumberFormat('yyyy-mm-dd hh:mm:ss');
     SpreadsheetApp.flush();
     return json_({ok:true,id:payload.id});
